@@ -1,0 +1,109 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial;
+  background: #eeeeee;
+}
+
+/* 设置上导航栏的样式 */
+.topnav {
+  overflow: hidden;
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  background-color: #209000;
+  outline-style: solid;
+  outline-width: 10px;
+  outline-color: #209000;
+}
+
+/* 设置 topnav 链接的样式 */
+.topnav a {
+  margin-top: 10px;
+  float: left;
+  display: block;
+  color: #ffffff;
+  text-align: center;
+  padding: 6px 16px;
+  text-decoration: none;
+}
+
+/* 改变鼠标悬停时的颜色 */
+.topnav a:hover {
+  color: #104000;
+}
+
+
+/* 创建两个不相等的彼此并排的浮动列 */
+/* 左列 */
+.leftcolumn {
+  float: left;
+  width: 75%;
+}
+
+/* 右列 */
+.rightcolumn {
+  float: left;
+  width: 25%;
+  padding-left: 20px;
+}
+
+/* 单列 */
+.onecolumn {
+  float: left;
+  width: 100%;
+}
+
+/* 为文章添加卡片效果 */
+.card {
+  background-color: white;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+/* 卡片链接 */
+.card a {
+  text-decoration: none;
+  color: #209000;
+}
+
+.card a:hover {
+  text-decoration: none;
+  color: #105000;
+}
+
+/* 清除列之后的浮动 */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* 页脚 */
+.footer {
+  padding: 10px;
+  text-align: center;
+  background: #dddddd;
+  margin-top: 20px;
+  outline-style: solid;
+  outline-width: 10px;
+  outline-color: #dddddd;
+}
+
+/* 响应式布局 - 当屏幕的宽度小于 800 像素时，使两列堆叠而不是并排 */
+@media screen and (max-width: 800px) {
+  .leftcolumn, .rightcolumn {   
+    width: 100%;
+    padding: 0;
+  }
+}
+
+/* 响应式布局 - 当屏幕的宽度小于 400 像素时，使导航链接堆叠而不是并排 */
+@media screen and (max-width: 400px) {
+  .topnav a {
+    float: left;
+    width: 50%;
+  }
+}
