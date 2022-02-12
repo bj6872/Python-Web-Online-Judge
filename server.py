@@ -1,12 +1,12 @@
 import socket
 import webbrowser
 
+ip = input('请输入你的 ip 地址：')  # 推荐替换成自己的 ip 地址（也可以输入），可以是 127.0.0.1
+port = 8866  # 默认端口，可修改
+data = ans = head = ""
+
 def username(x):  # 根据 id 返回用户名的 HTML 标签
     return '<b style="color:#e74c3c">zxd</b>'
-
-ip = "192.168.101.24"
-port = 8866
-data = ans = head = ""
 
 def find_label(text):  # 寻找标签
     ans = []
@@ -38,7 +38,7 @@ def label_define(user, page, label):  # 标签定义（要写代码）
 
         ans = '<table border="0"><tr>'
         for i in ['编号&nbsp;', '难度', '名称']:
-            ans += '<td style="font-size:2px">' + i + '</td>'
+            ans += '<td style="font-size:75%">' + i + '</td>'
         ans += '</tr>'
         
         for i in range(len(data)):
@@ -158,7 +158,7 @@ def retpage(user, page, real_page):  # 自动处理页面
     return [200, 'text/html', answer]
 
 def answer(user, page):  # 返回函数（在这里编写代码）
-    print(user, page)
+    print('访问请求:', user, '-', page)
     if page == '/' or page == '':  # 主页
         return retpage(user, page, 'pages/index.html')
     
@@ -195,25 +195,30 @@ so = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 so.bind((ip, port))
 
 so.listen(4)
-webbrowser.open('http://192.168.101.24:8866/')
+webbrowser.open('http://' + ip + ':' + str(port) + '/')
 
 while True:
     conn, addr = so.accept()
-    data = bytes.decode(conn.recv(1024))
-    data = data.split()
-    ans = answer(addr[0], data[1])
-    if ans[0] == 200:
-        head = 'HTTP/1.1 200 OK\nContent-type: ' + ans[1] +'; charset="utf-8"\n\n'  # 拼接 Response 头
-        conn.sendall(str.encode(head + ans[2]))
-    elif ans[0] == 301:
-        head = 'HTTP/1.1 301 Permanently Moved\nLocation: ' + ans[1] + '\n\n<html><head></head><body></body></html>'
+    try:
+        data = bytes.decode(conn.recv(1024))
+        data = data.split(' ')
+        ans = answer(addr[0], data[1])
+        if ans[0] == 200:
+            head = 'HTTP/1.1 200 OK\nContent-type: ' + ans[1] +'; charset="utf-8"\n\n'  # 拼接 Response 头
+            conn.sendall(str.encode(head + ans[2]))
+        elif ans[0] == 301:
+            head = 'HTTP/1.1 301 Permanently Moved\nLocation: ' + ans[1] + '\n\n<html><head></head><body></body></html>'
+            conn.sendall(str.encode(head))
+        elif ans[0] == 404:
+            head = 'HTTP/1.1 404 Object Not Found\nContent-type: text/html; charset="utf-8"\n\n'
+            file = open('pages/error.html', 'r', encoding='utf-8')
+            content = file.read()
+            file.close()
+            conn.sendall(str.encode(head + content))
+        conn.shutdown(2)
+        conn.close()
+    except:
+        print('服务器遇到了一个小问题。若频繁出现此提示，请联系代码开发者。')
+        head = 'HTTP/1.1 500 Internal Server Error\n\n'
         conn.sendall(str.encode(head))
-    elif ans[0] == 404:
-        head = 'HTTP/1.1 404 Object Not Found\nContent-type: text/html; charset="utf-8"\n\n'
-        file = open('pages/error.html', 'r', encoding='utf-8')
-        content = file.read()
-        file.close()
-        conn.sendall(str.encode(head + content))
-    conn.shutdown(2)
-    conn.close()
     del conn
